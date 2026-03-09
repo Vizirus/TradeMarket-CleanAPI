@@ -93,7 +93,7 @@ public class ProductRepository : AbstractRepository, IProductRepository
 
     public async Task<Product?> GetByIdWithDetailsAsync(int id)
     {
-        var i = await this.context.Products.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("No such product category with this id!"); ;
+        var i = await this.context.Products.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("No such product category with this id!");
         i.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == i.ProductCategoryId) ?? throw new ArgumentException("No such product category with this id!");
         var receipts = await this.context.ReceiptsDetails.Where(x => x.ProductId == i.Id).ToListAsync();
         foreach (var receipt in receipts)
