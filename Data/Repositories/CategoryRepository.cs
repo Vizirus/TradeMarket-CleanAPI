@@ -17,8 +17,8 @@ public class CategoryRepository : AbstractRepository, ICategoryRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = await this.context.ProductCategories.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
+            _ = await this.Context.ProductCategories.AddAsync(entity);
+            _ = await this.Context.SaveChangesAsync();
         }
     }
 
