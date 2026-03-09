@@ -5,20 +5,6 @@ namespace Data.Entities;
 
 public class ReceiptDetail : BaseEntity
 {
-    public ReceiptDetail()
-    {
-    }
-
-    public ReceiptDetail(int id, int receiptId, int productId, decimal unitPrice, decimal discountUnitPrice, int quality)
-        : base(id)
-    {
-        this.Quantity = quality;
-        this.ReceiptId = receiptId;
-        this.ProductId = productId;
-        this.UnitPrice = unitPrice;
-        this.DiscountUnitPrice = discountUnitPrice;
-    }
-
     [Column]
     [ForeignKey("Receipts")]
     public int ReceiptId { get; set; }
