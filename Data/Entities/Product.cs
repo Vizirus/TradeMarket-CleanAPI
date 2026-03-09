@@ -1,3 +1,32 @@
-﻿// 🛍️ Product Entity
-// This class represents a product in the marketplace
-// TODO: Define product properties like Name, Price, Description, Category, etc.
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Data.Entities;
+
+public class Product : BaseEntity
+{
+    public Product()
+    {
+    }
+
+    public Product(int id, int productCategoryId, string productName, decimal price)
+        : base(id)
+    {
+        this.ProductCategoryId = productCategoryId;
+        this.ProductName = productName;
+        this.Price = price;
+    }
+
+    [Column]
+    [ForeignKey("ProductCategory")]
+    public int ProductCategoryId { get; set; }
+
+    [Column]
+    public string ProductName { get; set; }
+
+    [Column]
+    public decimal Price { get; set; }
+
+    public ProductCategory Category { get; set; }
+
+    public IList<ReceiptDetail> ReceiptDetails { get; set; }
+}

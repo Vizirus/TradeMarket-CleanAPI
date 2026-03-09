@@ -1,3 +1,20 @@
-﻿// 🏗️ Base Entity Class
-// This class will contain common properties for all entities (Id, CreatedAt, etc.)
-// TODO: Define base properties and methods for all entities
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Data.Entities;
+
+public abstract class BaseEntity
+{
+    protected BaseEntity(int id)
+    {
+        this.Id = id;
+    }
+
+    protected BaseEntity()
+    {
+    }
+
+    [Key]
+    [Column]
+    public int Id { get; set; }
+}

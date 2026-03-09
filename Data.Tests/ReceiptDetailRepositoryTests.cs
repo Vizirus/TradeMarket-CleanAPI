@@ -1,4 +1,4 @@
-﻿using Data.Data;
+using Data.Data;
 using Data.Entities;
 using Data.Repositories;
 using Data.Tests.Comparers;

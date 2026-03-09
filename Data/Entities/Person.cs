@@ -1,3 +1,27 @@
-﻿// 👤 Person Entity
-// This class represents a person (base class for customers, employees, etc.)
-// TODO: Define person properties like FirstName, LastName, Email, Phone, etc.
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Data.Entities;
+
+public class Person : BaseEntity
+{
+    public Person()
+    {
+    }
+
+    public Person(int id, string firstName, string lastName, DateTime birthDate)
+        : base(id)
+    {
+        this.Name = firstName;
+        this.Surname = lastName;
+        this.BirthDate = birthDate;
+    }
+
+    [Column("Name")]
+    public string Name { get; set; }
+
+    [Column("Surname")]
+    public string Surname { get; set; }
+
+    [Column("BirthDate")]
+    public DateTime BirthDate { get; set; }
+}

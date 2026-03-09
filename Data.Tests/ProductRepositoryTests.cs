@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Data.Data;
 using Data.Entities;
 using Data.Repositories;
