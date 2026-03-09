@@ -8,10 +8,10 @@ public class Receipt : BaseEntity
     {
     }
 
-    public Receipt(int id, int customerId, DateTime OperationDate, bool isCheckedOut)
+    public Receipt(int id, int customerId, DateTime operationDate, bool isCheckedOut)
         : base(id)
     {
-        this.OperationDate = OperationDate;
+        this.OperationDate = operationDate;
         this.CustomerId = customerId;
         this.IsCheckedOut = isCheckedOut;
     }
@@ -26,7 +26,7 @@ public class Receipt : BaseEntity
     [Column]
     public bool IsCheckedOut { get; set; }
 
-    public Customer Customer { get; set; }
+    public Customer? Customer { get; set; }
 
-    public IList<ReceiptDetail> ReceiptDetails { get; set; }
+    public IList<ReceiptDetail>? ReceiptDetails { get; set; }
 }

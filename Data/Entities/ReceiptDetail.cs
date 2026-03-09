@@ -36,7 +36,7 @@ public class ReceiptDetail : BaseEntity
     [Column]
     public int Quantity { get; set; }
 
-    public Receipt Receipt { get; set; }
+    public Receipt? Receipt { get; set; }
 
-    public Product Product { get; set; }
+    public Product? Product { get; set; }
 }

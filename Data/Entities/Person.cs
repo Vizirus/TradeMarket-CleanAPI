@@ -6,6 +6,9 @@ public class Person : BaseEntity
 {
     public Person()
     {
+        this.Name = string.Empty;
+        this.Surname = string.Empty;
+        this.BirthDate = DateTime.MaxValue;
     }
 
     public Person(int id, string firstName, string lastName, DateTime birthDate)

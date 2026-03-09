@@ -6,6 +6,9 @@ public class Product : BaseEntity
 {
     public Product()
     {
+        this.ProductCategoryId = 0;
+        this.ProductName = string.Empty;
+        this.Price = 0;
     }
 
     public Product(int id, int productCategoryId, string productName, decimal price)
@@ -26,7 +29,7 @@ public class Product : BaseEntity
     [Column]
     public decimal Price { get; set; }
 
-    public ProductCategory Category { get; set; }
+    public ProductCategory? Category { get; set; }
 
-    public IList<ReceiptDetail> ReceiptDetails { get; set; }
+    public IList<ReceiptDetail>? ReceiptDetails { get; set; }
 }

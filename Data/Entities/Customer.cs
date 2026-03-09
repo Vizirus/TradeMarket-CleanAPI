@@ -6,6 +6,8 @@ public class Customer : BaseEntity
 {
     public Customer()
     {
+        this.PersonId = 0;
+        this.DiscountValue = 0;
     }
 
     public Customer(int id, int personId, int discountValue)
@@ -22,7 +24,7 @@ public class Customer : BaseEntity
     [Column]
     public int DiscountValue { get; set; }
 
-    public Person Person { get; set; }
+    public Person? Person { get; set; }
 
-    public IList<Receipt> Receipts { get; set; }
+    public IList<Receipt>? Receipts { get; set; }
 }

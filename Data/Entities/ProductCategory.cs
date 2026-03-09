@@ -6,6 +6,7 @@ public class ProductCategory : BaseEntity
 {
     public ProductCategory()
     {
+        this.CategoryName = string.Empty;
     }
 
     public ProductCategory(int id, string categoryName)
@@ -17,5 +18,5 @@ public class ProductCategory : BaseEntity
     [Column]
     public string CategoryName { get; set; }
 
-    public IList<Product> Products { get; set; }
+    public IList<Product>? Products { get; set; }
 }

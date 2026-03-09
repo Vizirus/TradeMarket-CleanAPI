@@ -14,59 +14,45 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
 
     public async Task AddAsync(ReceiptDetail entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = await this.context.ReceiptsDetails.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
-        }
+        _ = await this.Context.ReceiptsDetails.AddAsync(entity);
+        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(ReceiptDetail entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = this.context.ReceiptsDetails.Remove(entity);
-            _ = this.context.SaveChanges();
-        }
+        _ = this.Context.ReceiptsDetails.Remove(entity);
+        _ = this.Context.SaveChanges();
     }
 
     public async Task DeleteByIdAsync(int id)
     {
-        if (id >= 0)
+        var detail = await this.Context.ReceiptsDetails.FirstOrDefaultAsync(x => x.Id == id);
+        if (detail != null)
         {
-            var productCategory = await this.context.ReceiptsDetails.FirstOrDefaultAsync(x => x.Id == id);
-            if (productCategory != null)
-            {
-                _ = this.context.ReceiptsDetails.Remove(productCategory);
-                _ = await this.context.SaveChangesAsync();
-                return;
-            }
-
-            throw new ArgumentException("The id of receipt detail is inncorect! Could find any receipt details!");
+            _ = this.Context.ReceiptsDetails.Remove(detail);
+            _ = await this.Context.SaveChangesAsync();
+            return;
         }
 
-        throw new ArgumentException("The id of receipt detail is inncorect! Id was negative!");
+        throw new ArgumentException("The id of receipt detail is inncorect! Could find any receipt details!");
     }
 
     public async Task<IEnumerable<ReceiptDetail>> GetAllAsync()
     {
-        return await this.context.ReceiptsDetails.ToListAsync();
+        return await this.Context.ReceiptsDetails.ToListAsync();
     }
 
     public async Task<IEnumerable<ReceiptDetail>> GetAllWithDetailsAsync()
     {
-        var details = await this.context.ReceiptsDetails.ToListAsync();
+        var details = await this.Context.ReceiptsDetails.ToListAsync();
         foreach (var detail in details)
         {
-            detail.Receipt = await this.context.Receipts.FirstOrDefaultAsync(x => x.Id == detail.ReceiptId)
+            detail.Receipt = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == detail.ReceiptId)
                 ?? throw new ArgumentException("No such receipt with this id!");
-            detail.Product = await this.context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
+            detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
                 ?? throw new ArgumentException("No such product with this id!");
-            detail.Product.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId) ?? throw new ArgumentException("No such category!");
+            detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId)
+                ?? throw new ArgumentException("No such category!");
         }
 
         return details;
@@ -74,28 +60,18 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
 
     public async Task<ReceiptDetail?> GetByIdAsync(int id)
     {
-        if (id >= 0)
+        var detail = await this.Context.ReceiptsDetails.FirstOrDefaultAsync(x => x.Id == id);
+        if (detail is null)
         {
-            var category = await this.context.ReceiptsDetails.FirstOrDefaultAsync(x => x.Id == id);
-            if (category is null)
-            {
-                throw new ArgumentException("The id of receipt detail is inncorect! Could find any receipt details!");
-            }
-
-            return category;
+            throw new ArgumentException("The id of receipt detail is inncorect! Could find any receipt details!");
         }
 
-        throw new ArgumentException("The id of receipt detail is inncorect! Id was negative!");
+        return detail;
     }
 
     public void Update(ReceiptDetail entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = this.context.ReceiptsDetails.Update(entity);
-            _ = this.context.SaveChanges();
-        }
+        _ = this.Context.ReceiptsDetails.Update(entity);
+        _ = this.Context.SaveChanges();
     }
 }

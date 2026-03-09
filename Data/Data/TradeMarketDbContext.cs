@@ -5,6 +5,11 @@ namespace Data.Data;
 
 public class TradeMarketDbContext : DbContext
 {
+    public TradeMarketDbContext(DbContextOptions options)
+        : base(options)
+    {
+    }
+
     public DbSet<Customer> Customers { get; set; }
 
     public DbSet<Person> Persons { get; set; }
@@ -16,11 +21,6 @@ public class TradeMarketDbContext : DbContext
     public DbSet<Receipt> Receipts { get; set; }
 
     public DbSet<ReceiptDetail> ReceiptsDetails { get; set; }
-
-    public TradeMarketDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

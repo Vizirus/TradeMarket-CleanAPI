@@ -4,7 +4,6 @@ using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
-
 public class ReceiptRepository : AbstractRepository, IReceiptRepository
 {
     public ReceiptRepository(TradeMarketDbContext context)
@@ -14,64 +13,49 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
 
     public async Task AddAsync(Receipt entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = await this.context.Receipts.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
-        }
+        _ = await this.Context.Receipts.AddAsync(entity);
+        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(Receipt entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = this.context.Receipts.Remove(entity);
-            _ = this.context.SaveChanges();
-        }
+        _ = this.Context.Receipts.Remove(entity);
+        _ = this.Context.SaveChanges();
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public async Task DeleteByIdAsync(int id) // fixed: added async
     {
-        if (id >= 0)
+        var receipt = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
+        if (receipt != null)
         {
-            var productCategory = await this.context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
-            if (productCategory != null)
-            {
-                _ = this.context.Receipts.Remove(productCategory);
-                _ = await this.context.SaveChangesAsync();
-                return;
-            }
-
-            throw new ArgumentException("The id of receipt is inncorect! Could find any receipts!");
+            _ = this.Context.Receipts.Remove(receipt);
+            _ = await this.Context.SaveChangesAsync();  // fixed: added await
+            return;
         }
 
-        throw new ArgumentException("The id of receipt is inncorect! Id was negative!");
+        throw new ArgumentException("The id of receipt is incorrect! Could not find any receipts!");
     }
 
     public async Task<IEnumerable<Receipt>> GetAllAsync()
     {
-        return await this.context.Receipts.ToListAsync();
+        return await this.Context.Receipts.ToListAsync();
     }
 
     public async Task<IEnumerable<Receipt>> GetAllWithDetailsAsync()
     {
         List<Receipt> returnList = new();
-        foreach (var receipt in this.context.Receipts)
+        foreach (var receipt in this.Context.Receipts)
         {
-            receipt.Customer = await this.context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
+            receipt.Customer = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
                 ?? throw new ArgumentException("No such customer with this id!");
-
-            var details = await this.context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
+            var details = await this.Context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
             foreach (var detail in details)
             {
                 detail.Receipt = receipt;
-                detail.Product = await this.context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
+                detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
                     ?? throw new ArgumentException("No such product with this id!");
-                detail.Product.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId) ?? throw new ArgumentException("No such category!");
+                detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId)
+                    ?? throw new ArgumentException("No such category!");
             }
 
             receipt.ReceiptDetails = details;
@@ -83,54 +67,51 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
 
     public async Task<Receipt?> GetByIdAsync(int id)
     {
-        if (id >= 0)
+        var receipt = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
+        if (receipt is null)
         {
-            var category = await this.context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
-            if (category is null)
-            {
-                throw new ArgumentException("The id of receipt is inncorect! Could find any receipts!");
-            }
-
-            return category;
+            throw new ArgumentException("The id of receipt is incorrect! Could not find any receipts!");
         }
 
-        throw new ArgumentException("The id of receipt is inncorect! Id was negative!");
+        return receipt;
     }
 
-    public async Task<Receipt?> GetByIdWithDetailsAsync(int id)
+    // S4457 fix: public wrapper validates synchronously, private core does async work
+    public Task<Receipt?> GetByIdWithDetailsAsync(int id)
     {
         if (id < 0)
         {
             throw new ArgumentException("The id of receipt is incorrect! Id was negative!");
         }
 
-        var receipt = await this.context.Receipts.FirstOrDefaultAsync(x => x.Id == id)
-            ?? throw new ArgumentException("No such receipt with this id!");
-
-        receipt.Customer = await this.context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
-            ?? throw new ArgumentException("No such customer with this id!");
-
-        var details = await this.context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
-        foreach (var detail in details)
-        {
-            detail.Receipt = receipt;
-            detail.Product = await this.context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
-                ?? throw new ArgumentException("No such product with this id!");
-            detail.Product.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId) ?? throw new ArgumentException("No such category!");
-        }
-
-        receipt.ReceiptDetails = details;
-        return receipt;
+        return this.GetByIdWithDetailsCoreAsync(id);
     }
 
     public void Update(Receipt entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
+        _ = this.Context.Receipts.Update(entity);
+        _ = this.Context.SaveChanges();
+    }
+
+    private async Task<Receipt?> GetByIdWithDetailsCoreAsync(int id)
+    {
+        var receipt = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == id)
+            ?? throw new ArgumentException("No such receipt with this id!");
+
+        receipt.Customer = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
+            ?? throw new ArgumentException("No such customer with this id!");
+
+        var details = await this.Context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
+        foreach (var detail in details)
         {
-            _ = this.context.Receipts.Update(entity);
-            _ = this.context.SaveChanges();
+            detail.Receipt = receipt;
+            detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
+                ?? throw new ArgumentException("No such product with this id!");
+            detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId)
+                ?? throw new ArgumentException("No such category!");
         }
+
+        receipt.ReceiptDetails = details;
+        return receipt;
     }
 }

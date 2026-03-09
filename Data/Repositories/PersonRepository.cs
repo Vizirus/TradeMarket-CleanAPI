@@ -14,73 +14,48 @@ public class PersonRepository : AbstractRepository, IPersonRepository
 
     public async Task AddAsync(Person entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = await this.context.Persons.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
-        }
+        _ = await this.Context.Persons.AddAsync(entity);
+        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(Person entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = this.context.Persons.Remove(entity);
-            _ = this.context.SaveChanges();
-        }
+        _ = this.Context.Persons.Remove(entity);
+        _ = this.Context.SaveChanges();
     }
 
     public async Task DeleteByIdAsync(int id)
     {
-        if (id >= 0)
+        var person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == id);
+        if (person != null)
         {
-            var productCategory = await this.context.Persons.FirstOrDefaultAsync(x => x.Id == id);
-            if (productCategory != null)
-            {
-                _ = this.context.Persons.Remove(productCategory);
-                _ = await this.context.SaveChangesAsync();
-                return;
-            }
-
-            throw new ArgumentException("The id of person is inncorect! Could find any persons!");
+            _ = this.Context.Persons.Remove(person);
+            _ = await this.Context.SaveChangesAsync();
+            return;
         }
 
-        throw new ArgumentException("The id of person is inncorect! Id was negative!");
+        throw new ArgumentException("The id of person is inncorect! Could find any persons!");
     }
 
     public async Task<IEnumerable<Person>> GetAllAsync()
     {
-        return await this.context.Persons.ToListAsync();
+        return await this.Context.Persons.ToListAsync();
     }
 
     public async Task<Person?> GetByIdAsync(int id)
     {
-        if (id >= 0)
+        var person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == id);
+        if (person is null)
         {
-            var category = await this.context.Persons.FirstOrDefaultAsync(x => x.Id == id);
-            if (category is null)
-            {
-                throw new ArgumentException("The id of person is inncorect! Could find any personss!");
-            }
-
-            return category;
+            throw new ArgumentException("The id of person is inncorect! Could find any persons!");
         }
 
-        throw new ArgumentException("The id of person is inncorect! Id was negative!");
+        return person;
     }
 
     public void Update(Person entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = this.context.Persons.Update(entity);
-            _ = this.context.SaveChanges();
-        }
+        _ = this.Context.Persons.Update(entity);
+        _ = this.Context.SaveChanges();
     }
 }
