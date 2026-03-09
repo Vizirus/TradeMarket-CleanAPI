@@ -4,7 +4,6 @@ using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
-
 public class PersonRepository : AbstractRepository, IPersonRepository
 {
     public PersonRepository(TradeMarketDbContext context)
@@ -34,7 +33,7 @@ public class PersonRepository : AbstractRepository, IPersonRepository
             return;
         }
 
-        throw new ArgumentException("The id of person is inncorect! Could find any persons!");
+        throw new ArgumentException("The id of person is incorrect! Could not find any persons!");
     }
 
     public async Task<IEnumerable<Person>> GetAllAsync()
@@ -47,7 +46,7 @@ public class PersonRepository : AbstractRepository, IPersonRepository
         var person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == id);
         if (person is null)
         {
-            throw new ArgumentException("The id of person is inncorect! Could find any persons!");
+            throw new ArgumentException("The id of person is incorrect! Could not find any persons!");
         }
 
         return person;

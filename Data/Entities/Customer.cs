@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
-
 public class Customer : BaseEntity
 {
     public Customer()

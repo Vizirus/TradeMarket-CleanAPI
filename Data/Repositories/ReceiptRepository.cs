@@ -43,7 +43,7 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
 
     public async Task<IEnumerable<Receipt>> GetAllWithDetailsAsync()
     {
-        List<Receipt> returnList = new();
+        List<Receipt> returnList = new ();
         foreach (var receipt in this.Context.Receipts)
         {
             receipt.Customer = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)

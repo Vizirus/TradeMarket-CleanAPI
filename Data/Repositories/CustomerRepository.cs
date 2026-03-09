@@ -4,7 +4,6 @@ using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
-
 public class CustomerRepository : AbstractRepository, ICustomerRepository
 {
     public CustomerRepository(TradeMarketDbContext context)
@@ -34,7 +33,7 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
             return;
         }
 
-        throw new ArgumentException("The id of customer is inncorect! Could find any customers!");
+        throw new ArgumentException("The id of customer is incorrect! Could not find any customers!");
     }
 
     public async Task<IEnumerable<Customer>> GetAllAsync()
@@ -64,19 +63,19 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
 
     public async Task<Customer?> GetByIdAsync(int id)
     {
-        var category = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id);
-        if (category is null)
+        var customer = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id); // fixed: renamed from 'category'
+        if (customer is null)
         {
-            throw new ArgumentException("The id of customer is inncorect! Could find any customers!");
+            throw new ArgumentException("The id of customer is incorrect! Could not find any customers!");
         }
 
-        return category;
+        return customer;
     }
 
     public async Task<Customer?> GetByIdWithDetailsAsync(int id)
     {
         var i = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("No such customer with this id!");
-        i.Person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId) ?? throw new ArgumentException("No such customer with this id!");
+        i.Person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId) ?? throw new ArgumentException("No such person with this id!");
         var receipts = await this.Context.Receipts.Where(x => x.CustomerId == i.Id).ToListAsync();
         foreach (var receipt in receipts)
         {

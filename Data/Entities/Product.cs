@@ -24,7 +24,7 @@ public class Product : BaseEntity
     public int ProductCategoryId { get; set; }
 
     [Column]
-    public string ProductName { get; set; }
+    public string? ProductName { get; set; }
 
     [Column]
     public decimal Price { get; set; }

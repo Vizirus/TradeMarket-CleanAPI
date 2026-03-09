@@ -4,7 +4,6 @@ using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
-
 public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailRepository
 {
     public ReceiptDetailRepository(TradeMarketDbContext context)
@@ -34,7 +33,7 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
             return;
         }
 
-        throw new ArgumentException("The id of receipt detail is inncorect! Could find any receipt details!");
+        throw new ArgumentException("The id of receipt detail is incorrect! Could not find any receipt details!");
     }
 
     public async Task<IEnumerable<ReceiptDetail>> GetAllAsync()
@@ -63,7 +62,7 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
         var detail = await this.Context.ReceiptsDetails.FirstOrDefaultAsync(x => x.Id == id);
         if (detail is null)
         {
-            throw new ArgumentException("The id of receipt detail is inncorect! Could find any receipt details!");
+            throw new ArgumentException("The id of receipt detail is incorrect! Could not find any receipt details!");
         }
 
         return detail;

@@ -16,7 +16,7 @@ public class ProductCategory : BaseEntity
     }
 
     [Column]
-    public string CategoryName { get; set; }
+    public string? CategoryName { get; set; }
 
     public IList<Product>? Products { get; set; }
 }

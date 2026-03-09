@@ -7,8 +7,8 @@ internal static class DataPopulator
     {
         return new List<Customer>
         {
-            new Customer(1, 1, 10),
-            new Customer(2, 2, 5),
+            new Customer { Id = 1, PersonId = 1, DiscountValue = 2 },
+            new Customer { Id = 2, PersonId = 2, DiscountValue = 5 },
         };
     }
 
@@ -16,8 +16,8 @@ internal static class DataPopulator
     {
         return new List<Person>
         {
-            new Person(1, "John", "Doe", new DateTime(new DateOnly(1999, 1, 1), new TimeOnly(0, 0, 0), DateTimeKind.Utc)),
-            new Person(2, "Jane", "Smith", new DateTime(new DateOnly(1990, 5, 15), new TimeOnly(0, 0, 0), DateTimeKind.Utc)),
+            new Person { Id = 1, Name = "John", Surname = "Doe", BirthDate = new DateTime(1999, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+            new Person { Id = 2, Name = "Jane", Surname = "Smith", BirthDate = new DateTime(1990, 5, 15, 0, 0, 0, DateTimeKind.Utc) },
         };
     }
 
@@ -25,9 +25,9 @@ internal static class DataPopulator
     {
         return new List<Product>
         {
-            new Product(1, 1, "Apple", 1.50m),
-            new Product(2, 1, "Banana", 1.00m),
-            new Product(3, 2, "Shampoo", 5.99m),
+            new Product { Id = 1, ProductCategoryId = 1, ProductName = "Apple", Price = 1.50m },
+            new Product { Id = 2, ProductCategoryId = 1, ProductName = "Banana", Price = 1.00m },
+            new Product { Id = 3, ProductCategoryId = 2, ProductName = "Shampoo", Price = 5.99m },
         };
     }
 
@@ -35,8 +35,8 @@ internal static class DataPopulator
     {
         return new List<ProductCategory>
         {
-            new ProductCategory(1, "Fruits"),
-            new ProductCategory(2, "Cosmetics"),
+            new ProductCategory { Id = 1, CategoryName = "Fruits" },
+            new ProductCategory { Id = 2, CategoryName = "Cosmetics" },
         };
     }
 
@@ -44,8 +44,8 @@ internal static class DataPopulator
     {
         return new List<Receipt>
         {
-            new Receipt(1, 1, new DateTime(new DateOnly(2024, 2, 1), new TimeOnly(0, 0, 0), DateTimeKind.Utc), true),
-            new Receipt(2, 2, new DateTime(new DateOnly(2024, 2, 4), new TimeOnly(0, 0, 0), DateTimeKind.Utc), false),
+            new Receipt { Id = 1, CustomerId = 1, OperationDate = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Utc), IsCheckedOut = true },
+            new Receipt { Id = 2, CustomerId = 2, OperationDate = new DateTime(2024, 2, 4, 0, 0, 0, DateTimeKind.Utc), IsCheckedOut = false },
         };
     }
 
@@ -53,9 +53,9 @@ internal static class DataPopulator
     {
         return new List<ReceiptDetail>
         {
-            new ReceiptDetail(1, 1, 1, 1.50m, 1.35m, 2),
-            new ReceiptDetail(2, 1, 2, 1.00m, 0.95m, 3),
-            new ReceiptDetail(3, 2, 3, 5.99m, 5.50m, 1),
+            new ReceiptDetail { Id = 1, ReceiptId = 1, ProductId = 1, UnitPrice = 1.50m, DiscountUnitPrice = 1.35m, Quantity = 2 },
+            new ReceiptDetail { Id = 2, ReceiptId = 1, ProductId = 2, UnitPrice = 1.00m, DiscountUnitPrice = 0.95m, Quantity = 3 },
+            new ReceiptDetail { Id = 3, ReceiptId = 2, ProductId = 3, UnitPrice = 5.99m, DiscountUnitPrice = 5.50m, Quantity = 1 },
         };
     }
 }

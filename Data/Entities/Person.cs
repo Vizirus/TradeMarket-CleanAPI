@@ -20,11 +20,11 @@ public class Person : BaseEntity
     }
 
     [Column("Name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Column("Surname")]
-    public string Surname { get; set; }
+    public string? Surname { get; set; }
 
     [Column("BirthDate")]
-    public DateTime BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
 }

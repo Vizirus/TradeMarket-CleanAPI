@@ -4,7 +4,6 @@ using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
-
 public class CategoryRepository : AbstractRepository, ICategoryRepository
 {
     public CategoryRepository(TradeMarketDbContext context)
@@ -34,7 +33,7 @@ public class CategoryRepository : AbstractRepository, ICategoryRepository
             return;
         }
 
-        throw new ArgumentException("The id of category is inncorect! Could find any category!");
+        throw new ArgumentException("The id of category is incorrect! Could not find any categories!");
     }
 
     public async Task<IEnumerable<ProductCategory>> GetAllAsync()
@@ -47,12 +46,10 @@ public class CategoryRepository : AbstractRepository, ICategoryRepository
         var category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == id);
         if (category is null)
         {
-            throw new ArgumentException("The id of category is inncorect! Could find any category!");
+            throw new ArgumentException("The id of category is incorrect! Could not find any categories!");
         }
 
-        return category;
-
-        throw new ArgumentException("The id of category is inncorect! Id was negative!");
+        return category; // removed unreachable throw after this
     }
 
     public void Update(ProductCategory entity)
