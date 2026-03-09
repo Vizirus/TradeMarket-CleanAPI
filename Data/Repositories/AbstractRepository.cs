@@ -5,12 +5,12 @@ using Data.Entities;
 namespace Data.Repositories;
 public class AbstractRepository
 {
-    protected readonly TradeMarketDbContext context;
-
-    public AbstractRepository(TradeMarketDbContext context)
+    protected AbstractRepository(TradeMarketDbContext context)
     {
-        this.context = context;
+        this.Context = context;
     }
+
+    protected TradeMarketDbContext Context { get; }
 
     protected static bool ValidateEntity(BaseEntity entity)
     {

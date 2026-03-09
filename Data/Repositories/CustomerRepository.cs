@@ -18,8 +18,8 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = await this.context.Customers.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
+            _ = await this.Context.Customers.AddAsync(entity);
+            _ = await this.Context.SaveChangesAsync();
         }
     }
 
@@ -29,8 +29,8 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Customers.Remove(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Customers.Remove(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 
@@ -38,11 +38,11 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
     {
         if (id >= 0)
         {
-            Customer? productCategory = await this.context.Customers.FirstOrDefaultAsync(x => x.Id == id);
+            Customer? productCategory = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id);
             if (productCategory != null)
             {
-                _ = this.context.Customers.Remove(productCategory);
-                _ = await this.context.SaveChangesAsync();
+                _ = this.Context.Customers.Remove(productCategory);
+                _ = await this.Context.SaveChangesAsync();
                 return;
             }
 
@@ -54,20 +54,20 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
 
     public async Task<IEnumerable<Customer>> GetAllAsync()
     {
-        return await this.context.Customers.ToListAsync();
+        return await this.Context.Customers.ToListAsync();
     }
 
     public async Task<IEnumerable<Customer>> GetAllWithDetailsAsync()
     {
-        List<Customer> returnList = new();
-        foreach (var i in this.context.Customers)
+        List<Customer> returnList = new ();
+        foreach (var i in this.Context.Customers)
         {
-            i.Person = await this.context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId) ?? throw new ArgumentException("No such customer with this id!");
-            var receipts = await this.context.Receipts.Where(x => x.CustomerId == i.Id).ToListAsync();
+            i.Person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId) ?? throw new ArgumentException("No such customer with this id!");
+            var receipts = await this.Context.Receipts.Where(x => x.CustomerId == i.Id).ToListAsync();
             foreach (var receipt in receipts)
             {
                 receipt.Customer = i;
-                receipt.ReceiptDetails = await this.context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
+                receipt.ReceiptDetails = await this.Context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
             }
 
             i.Receipts = receipts;
@@ -81,7 +81,7 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
     {
         if (id >= 0)
         {
-            var category = await this.context.Customers.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id);
             if (category is null)
             {
                 throw new ArgumentException("The id of customer is inncorect! Could find any customers!");
@@ -97,13 +97,13 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
     {
         if (id >= 0)
         {
-            var i = await this.context.Customers.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("No such customer with this id!");
-            i.Person = await this.context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId) ?? throw new ArgumentException("No such customer with this id!");
-            var receipts = await this.context.Receipts.Where(x => x.CustomerId == i.Id).ToListAsync();
+            var i = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("No such customer with this id!");
+            i.Person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId) ?? throw new ArgumentException("No such customer with this id!");
+            var receipts = await this.Context.Receipts.Where(x => x.CustomerId == i.Id).ToListAsync();
             foreach (var receipt in receipts)
             {
                 receipt.Customer = i;
-                receipt.ReceiptDetails = await this.context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
+                receipt.ReceiptDetails = await this.Context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
             }
 
             i.Receipts = receipts;
@@ -119,8 +119,8 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Customers.Update(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Customers.Update(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 }

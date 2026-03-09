@@ -18,8 +18,8 @@ public class ProductRepository : AbstractRepository, IProductRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = await this.context.Products.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
+            _ = await this.Context.Products.AddAsync(entity);
+            _ = await this.Context.SaveChangesAsync();
         }
     }
 
@@ -29,8 +29,8 @@ public class ProductRepository : AbstractRepository, IProductRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Products.Remove(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Products.Remove(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 
@@ -38,11 +38,11 @@ public class ProductRepository : AbstractRepository, IProductRepository
     {
         if (id >= 0)
         {
-            var productCategory = await this.context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var productCategory = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (productCategory != null)
             {
-                _ = this.context.Products.Remove(productCategory);
-                _ = await this.context.SaveChangesAsync();
+                _ = this.Context.Products.Remove(productCategory);
+                _ = await this.Context.SaveChangesAsync();
                 return;
             }
 
@@ -54,16 +54,16 @@ public class ProductRepository : AbstractRepository, IProductRepository
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await this.context.Products.ToListAsync();
+        return await this.Context.Products.ToListAsync();
     }
 
     public async Task<IEnumerable<Product>> GetAllWithDetailsAsync()
     {
-        List<Product> returnList = new();
-        foreach (var i in this.context.Products)
+        List<Product> returnList = new ();
+        foreach (var i in this.Context.Products)
         {
-            i.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == i.ProductCategoryId) ?? throw new ArgumentException("No such product category with this id!");
-            var receipts = await this.context.ReceiptsDetails.Where(x => x.ProductId == i.Id).ToListAsync();
+            i.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == i.ProductCategoryId) ?? throw new ArgumentException("No such product category with this id!");
+            var receipts = await this.Context.ReceiptsDetails.Where(x => x.ProductId == i.Id).ToListAsync();
             foreach (var receipt in receipts)
             {
                 receipt.Product = i;
@@ -79,7 +79,7 @@ public class ProductRepository : AbstractRepository, IProductRepository
     {
         if (id >= 0)
         {
-            var category = await this.context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (category is null)
             {
                 throw new ArgumentException("The id of product is inncorect! Could find any products!");
@@ -93,9 +93,9 @@ public class ProductRepository : AbstractRepository, IProductRepository
 
     public async Task<Product?> GetByIdWithDetailsAsync(int id)
     {
-        var i = await this.context.Products.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("No such product category with this id!");
-        i.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == i.ProductCategoryId) ?? throw new ArgumentException("No such product category with this id!");
-        var receipts = await this.context.ReceiptsDetails.Where(x => x.ProductId == i.Id).ToListAsync();
+        var i = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("No such product category with this id!");
+        i.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == i.ProductCategoryId) ?? throw new ArgumentException("No such product category with this id!");
+        var receipts = await this.Context.ReceiptsDetails.Where(x => x.ProductId == i.Id).ToListAsync();
         foreach (var receipt in receipts)
         {
             receipt.Product = i;
@@ -110,8 +110,8 @@ public class ProductRepository : AbstractRepository, IProductRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Products.Update(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Products.Update(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 }

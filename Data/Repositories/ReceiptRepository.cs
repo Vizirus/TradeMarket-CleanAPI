@@ -18,8 +18,8 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = await this.context.Receipts.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
+            _ = await this.Context.Receipts.AddAsync(entity);
+            _ = await this.Context.SaveChangesAsync();
         }
     }
 
@@ -29,8 +29,8 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Receipts.Remove(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Receipts.Remove(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 
@@ -38,11 +38,11 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
     {
         if (id >= 0)
         {
-            var productCategory = await this.context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
+            var productCategory = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
             if (productCategory != null)
             {
-                _ = this.context.Receipts.Remove(productCategory);
-                _ = await this.context.SaveChangesAsync();
+                _ = this.Context.Receipts.Remove(productCategory);
+                _ = await this.Context.SaveChangesAsync();
                 return;
             }
 
@@ -54,24 +54,24 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
 
     public async Task<IEnumerable<Receipt>> GetAllAsync()
     {
-        return await this.context.Receipts.ToListAsync();
+        return await this.Context.Receipts.ToListAsync();
     }
 
     public async Task<IEnumerable<Receipt>> GetAllWithDetailsAsync()
     {
-        List<Receipt> returnList = new();
-        foreach (var receipt in this.context.Receipts)
+        List<Receipt> returnList = new ();
+        foreach (var receipt in this.Context.Receipts)
         {
-            receipt.Customer = await this.context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
+            receipt.Customer = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
                 ?? throw new ArgumentException("No such customer with this id!");
 
-            var details = await this.context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
+            var details = await this.Context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
             foreach (var detail in details)
             {
                 detail.Receipt = receipt;
-                detail.Product = await this.context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
+                detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
                     ?? throw new ArgumentException("No such product with this id!");
-                detail.Product.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId) ?? throw new ArgumentException("No such category!");
+                detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId) ?? throw new ArgumentException("No such category!");
             }
 
             receipt.ReceiptDetails = details;
@@ -85,7 +85,7 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
     {
         if (id >= 0)
         {
-            var category = await this.context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == id);
             if (category is null)
             {
                 throw new ArgumentException("The id of receipt is inncorect! Could find any receipts!");
@@ -104,19 +104,19 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
             throw new ArgumentException("The id of receipt is incorrect! Id was negative!");
         }
 
-        var receipt = await this.context.Receipts.FirstOrDefaultAsync(x => x.Id == id)
+        var receipt = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw new ArgumentException("No such receipt with this id!");
 
-        receipt.Customer = await this.context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
+        receipt.Customer = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == receipt.CustomerId)
             ?? throw new ArgumentException("No such customer with this id!");
 
-        var details = await this.context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
+        var details = await this.Context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
         foreach (var detail in details)
         {
             detail.Receipt = receipt;
-            detail.Product = await this.context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
+            detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
                 ?? throw new ArgumentException("No such product with this id!");
-            detail.Product.Category = await this.context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId) ?? throw new ArgumentException("No such category!");
+            detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId) ?? throw new ArgumentException("No such category!");
         }
 
         receipt.ReceiptDetails = details;
@@ -129,8 +129,8 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Receipts.Update(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Receipts.Update(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 }

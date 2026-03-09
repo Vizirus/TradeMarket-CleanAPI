@@ -18,8 +18,8 @@ public class PersonRepository : AbstractRepository, IPersonRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = await this.context.Persons.AddAsync(entity);
-            _ = await this.context.SaveChangesAsync();
+            _ = await this.Context.Persons.AddAsync(entity);
+            _ = await this.Context.SaveChangesAsync();
         }
     }
 
@@ -29,8 +29,8 @@ public class PersonRepository : AbstractRepository, IPersonRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Persons.Remove(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Persons.Remove(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 
@@ -38,11 +38,11 @@ public class PersonRepository : AbstractRepository, IPersonRepository
     {
         if (id >= 0)
         {
-            var productCategory = await this.context.Persons.FirstOrDefaultAsync(x => x.Id == id);
+            var productCategory = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == id);
             if (productCategory != null)
             {
-                _ = this.context.Persons.Remove(productCategory);
-                _ = await this.context.SaveChangesAsync();
+                _ = this.Context.Persons.Remove(productCategory);
+                _ = await this.Context.SaveChangesAsync();
                 return;
             }
 
@@ -54,14 +54,14 @@ public class PersonRepository : AbstractRepository, IPersonRepository
 
     public async Task<IEnumerable<Person>> GetAllAsync()
     {
-        return await this.context.Persons.ToListAsync();
+        return await this.Context.Persons.ToListAsync();
     }
 
     public async Task<Person?> GetByIdAsync(int id)
     {
         if (id >= 0)
         {
-            var category = await this.context.Persons.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == id);
             if (category is null)
             {
                 throw new ArgumentException("The id of person is inncorect! Could find any personss!");
@@ -79,8 +79,8 @@ public class PersonRepository : AbstractRepository, IPersonRepository
         bool validation = ValidateEntity(entity);
         if (validation)
         {
-            _ = this.context.Persons.Update(entity);
-            _ = this.context.SaveChanges();
+            _ = this.Context.Persons.Update(entity);
+            _ = this.Context.SaveChanges();
         }
     }
 }
