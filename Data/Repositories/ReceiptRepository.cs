@@ -102,16 +102,24 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
             ?? throw new ArgumentException("No such customer with this id!");
 
         var details = await this.Context.ReceiptsDetails.Where(x => x.ReceiptId == receipt.Id).ToListAsync();
-        foreach (var detail in details)
+        if (details == null || details.Count == 0)
         {
-            detail.Receipt = receipt;
-            detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
-                ?? throw new ArgumentException("No such product with this id!");
-            detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId)
-                ?? throw new ArgumentException("No such category!");
+            receipt.ReceiptDetails = new List<ReceiptDetail>();
+        }
+        else
+        {
+            foreach (var detail in details)
+            {
+                detail.Receipt = receipt;
+                detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
+                    ?? throw new ArgumentException("No such product with this id!");
+                detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId)
+                    ?? throw new ArgumentException("No such category!");
+            }
+
+            receipt.ReceiptDetails = details;
         }
 
-        receipt.ReceiptDetails = details;
         return receipt;
     }
 }

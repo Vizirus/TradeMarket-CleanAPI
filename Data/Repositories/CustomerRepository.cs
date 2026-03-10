@@ -61,9 +61,9 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
         return returnList;
     }
 
-    public async Task<Customer?> GetByIdAsync(int id)
+    public Task<Customer?> GetByIdAsync(int id)
     {
-        var customer = await this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id); // fixed: renamed from 'category'
+        var customer = this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id);
         if (customer is null)
         {
             throw new ArgumentException("The id of customer is incorrect! Could not find any customers!");

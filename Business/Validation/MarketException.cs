@@ -1,4 +1,4 @@
-﻿namespace Business.Validation;
+namespace Business.Validation;
 
 public class MarketException : Exception
 {
