@@ -10,6 +10,17 @@ namespace Business.Tests;
 
 public class ReceiptServiceTests
 {
+    private static readonly int[] array1 = new[] { 1, 2 };
+
+    private static readonly int[] array2 = new[] { 1, 2 };
+
+    private static readonly object[] GetCustomersByProductIdCases =
+    {
+        new object[] { "1965-1-1", "1965-2-1", array1 },
+        new object[] { "1965-2-1", "1965-4-1", array2 },
+    };
+
+
     [Test]
     public async Task GetAllAsync_Always_ReturnsAllReceipts()
     {
@@ -137,9 +148,7 @@ public class ReceiptServiceTests
             .BeEquivalentTo(expected, options => options.Excluding(x => x.Product).Excluding(x => x.Receipt));
     }
 
-
-    [TestCase("1965-1-1", "1965-2-1", new[] { 1, 2 })]
-    [TestCase("1965-2-1", "1965-4-1", new[] { 3, 4, 5 })]
+    [TestCaseSource(nameof(GetCustomersByProductIdCases))]
     public async Task GetReceiptsByPeriodAsync_ValidPeriod_ReturnsReceiptsInPeriod(DateTime startDate, DateTime endDate,
         IEnumerable<int> expectedReceiptIds)
     {
