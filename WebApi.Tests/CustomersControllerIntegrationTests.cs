@@ -28,7 +28,7 @@ public class CustomersControllerIntegrationTests
     [Test]
     public async Task GetAll_ReturnsOkAndCustomers()
     {
-        var response = await this.client.GetAsync(new Uri("/api/customers"));
+        var response = await this.client.GetAsync(new Uri("/api/customers", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         var customers = await response.Content.ReadFromJsonAsync<List<CustomerModel>>();
         Assert.That(customers, Is.Not.Null.And.Not.Empty);
@@ -37,7 +37,7 @@ public class CustomersControllerIntegrationTests
     [Test]
     public async Task GetById_ReturnsOk_WhenCustomerExists()
     {
-        var response = await this.client.GetAsync(new Uri("/api/customers/1"));
+        var response = await this.client.GetAsync(new Uri("/api/customers/1", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         var customer = await response.Content.ReadFromJsonAsync<CustomerModel>();
         Assert.That(customer, Is.Not.Null);
@@ -47,7 +47,7 @@ public class CustomersControllerIntegrationTests
     [Test]
     public async Task GetById_ReturnsNotFound_WhenCustomerDoesNotExist()
     {
-        var response = await this.client.GetAsync(new Uri("/api/customers/9999"));
+        var response = await this.client.GetAsync(new Uri("/api/customers/9999", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
@@ -139,21 +139,21 @@ public class CustomersControllerIntegrationTests
     [Test]
     public async Task Delete_ReturnsNoContent_WhenCustomerExists()
     {
-        var response = await this.client.DeleteAsync(new Uri("/api/customers/2"));
+        var response = await this.client.DeleteAsync(new Uri("/api/customers/2", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
 
     [Test]
     public async Task Delete_ReturnsNoContent_WhenCustomerDoesNotExist()
     {
-        var response = await this.client.DeleteAsync(new Uri("/api/customers/9999"));
+        var response = await this.client.DeleteAsync(new Uri("/api/customers/9999", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
 
     [Test]
     public async Task GetCustomersByProductId_ReturnsOk_WhenProductExists()
     {
-        var response = await this.client.GetAsync(new Uri("/api/customers/by-product/1"));
+        var response = await this.client.GetAsync(new Uri("/api/customers/by-product/1", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         var customers = await response.Content.ReadFromJsonAsync<List<CustomerModel>>();
         Assert.That(customers, Is.Not.Null);
@@ -162,7 +162,7 @@ public class CustomersControllerIntegrationTests
     [Test]
     public async Task GetCustomersByProductId_ReturnsOk_WhenProductDoesNotExist()
     {
-        var response = await this.client.GetAsync(new Uri("/api/customers/by-product/9999"));
+        var response = await this.client.GetAsync(new Uri("/api/customers/by-product/9999", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         var customers = await response.Content.ReadFromJsonAsync<List<CustomerModel>>();
         Assert.That(customers, Is.Not.Null.And.Empty);

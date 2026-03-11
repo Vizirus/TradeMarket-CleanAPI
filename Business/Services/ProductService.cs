@@ -61,7 +61,7 @@ public class ProductService : IProductService
     public async Task<IEnumerable<ProductModel>> GetAllAsync()
     {
         List<ProductModel> result = new List<ProductModel>();
-        var collection = await this.unitOfWork.ProductRepository.GetAllWithDetailsAsync();
+        var collection = await this.unitOfWork.ProductRepository.GetAllAsync();
         if (collection is null || !collection.Any())
         {
             throw new MarketException("The collection was null or empty");
@@ -82,10 +82,10 @@ public class ProductService : IProductService
             throw new MarketException("The id was negative!");
         }
 
-        var dbObject = await this.unitOfWork.ProductRepository.GetByIdWithDetailsAsync(id);
+        var dbObject = await this.unitOfWork.ProductRepository.GetByIdAsync(id);
         if (dbObject is null)
         {
-            throw new MarketException("No such product exists with such id");
+            return null!;
         }
 
         return this.mapper.Map<ProductModel>(dbObject);
@@ -133,12 +133,6 @@ public class ProductService : IProductService
             (!filterId.HasValue || x.ProductCategoryId == filterId) &&
             (filterSearch.MinPrice == null || x.Price >= filterSearch.MinPrice) &&
             (filterSearch.MaxPrice == null || x.Price <= filterSearch.MaxPrice));
-
-        if (!returnProducts.Any())
-        {
-            throw new MarketException("Couldn`t find any product with this category and price range!");
-        }
-
         return returnProducts.Select(x => this.mapper.Map<ProductModel>(x));
     }
 

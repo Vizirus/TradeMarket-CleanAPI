@@ -19,7 +19,7 @@ public class StatisticService : IStatisticService
 
     public async Task<IEnumerable<ProductModel>> GetMostPopularProductsAsync(int productCount)
     {
-        if (productCount <= 0)
+        if (productCount < 0)
         {
             throw new MarketException("Product count must be positive.");
         }

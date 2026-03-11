@@ -14,13 +14,11 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
     public async Task AddAsync(ReceiptDetail entity)
     {
         _ = await this.Context.ReceiptsDetails.AddAsync(entity);
-        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(ReceiptDetail entity)
     {
         _ = this.Context.ReceiptsDetails.Remove(entity);
-        _ = this.Context.SaveChanges();
     }
 
     public async Task DeleteByIdAsync(int id)
@@ -29,16 +27,12 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
         if (detail != null)
         {
             _ = this.Context.ReceiptsDetails.Remove(detail);
-            _ = await this.Context.SaveChangesAsync();
-            return;
         }
-
-        throw new ArgumentException("The id of receipt detail is incorrect! Could not find any receipt details!");
     }
 
     public async Task<IEnumerable<ReceiptDetail>> GetAllAsync()
     {
-        return await this.Context.ReceiptsDetails.ToListAsync();
+        return await this.Context.ReceiptsDetails.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<ReceiptDetail>> GetAllWithDetailsAsync()
@@ -60,17 +54,17 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
     public async Task<ReceiptDetail?> GetByIdAsync(int id)
     {
         var detail = await this.Context.ReceiptsDetails.FirstOrDefaultAsync(x => x.Id == id);
-        if (detail is null)
-        {
-            throw new ArgumentException("The id of receipt detail is incorrect! Could not find any receipt details!");
-        }
-
         return detail;
     }
 
     public void Update(ReceiptDetail entity)
     {
-        _ = this.Context.ReceiptsDetails.Update(entity);
-        _ = this.Context.SaveChanges();
+        var existing = this.Context.ReceiptsDetails
+         .FirstOrDefault(c => c.Id == entity.Id);
+
+        if (existing != null)
+        {
+            this.Context.Entry(existing).CurrentValues.SetValues(entity);
+        }
     }
 }

@@ -102,14 +102,14 @@ public class ReceiptsControllerIntegrationTests
     [Test]
     public async Task Delete_ReturnsNoContent_WhenReceiptExists()
     {
-        var response = await this.client.DeleteAsync(new Uri("/api/receipts/3"));
+        var response = await this.client.DeleteAsync(new Uri("/api/receipts/3", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
 
     [Test]
     public async Task Delete_ReturnsNoContent_WhenReceiptDoesNotExist()
     {
-        var response = await this.client.DeleteAsync(new Uri("/api/receipts/9999"));
+        var response = await this.client.DeleteAsync(new Uri("/api/receipts/9999", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
 

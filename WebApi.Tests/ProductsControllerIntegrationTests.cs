@@ -131,14 +131,14 @@ public class ProductsControllerIntegrationTests
     [Test]
     public async Task Delete_ReturnsNoContent_WhenProductExists()
     {
-        var response = await this.client.DeleteAsync(new Uri("/api/products/2"));
+        var response = await this.client.DeleteAsync(new Uri("/api/products/2", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
 
     [Test]
     public async Task Delete_ReturnsNoContent_WhenProductDoesNotExist()
     {
-        var response = await this.client.DeleteAsync(new Uri("/api/products/9999"));
+        var response = await this.client.DeleteAsync(new Uri("/api/products/9999", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
 }

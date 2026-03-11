@@ -33,6 +33,11 @@ public class CustomerService : ICustomerService
             throw new MarketException("Parameters inside model were null!");
         }
 
+        if (DateTime.Compare(model.BirthDate, DateTime.Now) > 0 || DateTime.Compare(model.BirthDate, new DateTime(1820, 1, 1, 1, 1, 1, kind: DateTimeKind.Utc)) < 0 || model.DiscountValue < 0 || string.IsNullOrWhiteSpace(model.Surname))
+        {
+            throw new MarketException("Birth date is wrong!");
+        }
+
         Customer entity = this.mapper.Map<Customer>(model);
         await this.unitOfWork.CustomerRepository.AddAsync(entity);
         await this.unitOfWork.SaveAsync();
@@ -74,10 +79,10 @@ public class CustomerService : ICustomerService
             throw new MarketException("The id was negative!");
         }
 
-        var dbObject = await this.unitOfWork.CustomerRepository.GetByIdWithDetailsAsync(id);
+        var dbObject = await this.unitOfWork.CustomerRepository.GetByIdAsync(id);
         if (dbObject is null)
         {
-            throw new MarketException("No such customer exists with such id");
+            return null!;
         }
 
         return this.mapper.Map<CustomerModel>(dbObject);
@@ -99,11 +104,6 @@ public class CustomerService : ICustomerService
                 .Any(r => r.ReceiptDetails != null && r.ReceiptDetails.Any(rd => rd.ProductId == productId)))
             .Select(c => this.mapper.Map<CustomerModel>(c))
             .ToList();
-
-        if (result.Count == 0)
-        {
-            throw new MarketException("No customers found for this product!");
-        }
 
         return result;
     }

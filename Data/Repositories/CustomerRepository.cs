@@ -14,13 +14,11 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
     public async Task AddAsync(Customer entity)
     {
         _ = await this.Context.Customers.AddAsync(entity);
-        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(Customer entity)
     {
         _ = this.Context.Customers.Remove(entity);
-        _ = this.Context.SaveChanges();
     }
 
     public async Task DeleteByIdAsync(int id)
@@ -29,11 +27,7 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
         if (customer != null)
         {
             _ = this.Context.Customers.Remove(customer);
-            _ = await this.Context.SaveChangesAsync();
-            return;
         }
-
-        throw new ArgumentException("The id of customer is incorrect! Could not find any customers!");
     }
 
     public async Task<IEnumerable<Customer>> GetAllAsync()
@@ -43,10 +37,13 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
 
     public async Task<IEnumerable<Customer>> GetAllWithDetailsAsync()
     {
-        List<Customer> returnList = new ();
-        foreach (var i in this.Context.Customers)
+        List<Customer> returnList = new();
+        var customers = await this.Context.Customers.ToListAsync(); // ← load into memory first
+
+        foreach (var i in customers) // ← now iterate in-memory list, not the DbSet directly
         {
-            i.Person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId) ?? throw new ArgumentException("No such customer with this id!");
+            i.Person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId)
+                ?? throw new ArgumentException("No such customer with this id!");
             var receipts = await this.Context.Receipts.Where(x => x.CustomerId == i.Id).ToListAsync();
             foreach (var receipt in receipts)
             {
@@ -61,13 +58,10 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
         return returnList;
     }
 
-    public Task<Customer?> GetByIdAsync(int id)
+    public async Task<Customer?> GetByIdAsync(int id)
     {
-        var customer = this.Context.Customers.FirstOrDefaultAsync(x => x.Id == id);
-        if (customer is null)
-        {
-            throw new ArgumentException("The id of customer is incorrect! Could not find any customers!");
-        }
+        var customerList = await this.Context.Customers.ToListAsync();
+        var customer = customerList.FirstOrDefault(x => x.Id == id);
 
         return customer;
     }
@@ -89,7 +83,12 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
 
     public void Update(Customer entity)
     {
-        _ = this.Context.Customers.Update(entity);
-        _ = this.Context.SaveChanges();
+        var existing = this.Context.Customers
+         .FirstOrDefault(c => c.Id == entity.Id);
+
+        if (existing != null)
+        {
+            this.Context.Entry(existing).CurrentValues.SetValues(entity);
+        }
     }
 }

@@ -14,13 +14,11 @@ public class ProductRepository : AbstractRepository, IProductRepository
     public async Task AddAsync(Product entity)
     {
         _ = await this.Context.Products.AddAsync(entity);
-        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(Product entity)
     {
         _ = this.Context.Products.Remove(entity);
-        _ = this.Context.SaveChanges();
     }
 
     public async Task DeleteByIdAsync(int id)
@@ -30,15 +28,12 @@ public class ProductRepository : AbstractRepository, IProductRepository
         {
             _ = this.Context.Products.Remove(product);
             _ = await this.Context.SaveChangesAsync();
-            return;
         }
-
-        throw new ArgumentException("The id of product is incorrect! Could not find any products!");
     }
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await this.Context.Products.ToListAsync();
+        return await this.Context.Products.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<Product>> GetAllWithDetailsAsync()
@@ -61,11 +56,8 @@ public class ProductRepository : AbstractRepository, IProductRepository
 
     public async Task<Product?> GetByIdAsync(int id)
     {
-        var product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == id);
-        if (product is null)
-        {
-            throw new ArgumentException("The id of product is incorrect! Could not find any products!");
-        }
+        var productCollection = await this.Context.Products.ToListAsync();
+        var product = productCollection.FirstOrDefault(x => x.Id == id);
 
         return product;
     }
@@ -85,7 +77,12 @@ public class ProductRepository : AbstractRepository, IProductRepository
 
     public void Update(Product entity)
     {
-        _ = this.Context.Products.Update(entity);
-        _ = this.Context.SaveChanges();
+        var existing = this.Context.Products
+         .FirstOrDefault(c => c.Id == entity.Id);
+
+        if (existing != null)
+        {
+            this.Context.Entry(existing).CurrentValues.SetValues(entity);
+        }
     }
 }

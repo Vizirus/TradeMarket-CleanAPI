@@ -106,7 +106,7 @@ public class ProductsControllerAdvancedTests
     [Test]
     public async Task RemoveCategory_ReturnsNoContent_WhenCategoryExists()
     {
-        var response = await this.client.DeleteAsync(new Uri("/api/products/categories/2"));
+        var response = await this.client.DeleteAsync(new Uri("/api/products/categories/2", UriKind.RelativeOrAbsolute));
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
 }

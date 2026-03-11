@@ -30,7 +30,7 @@ public class PerformanceTests
     public async Task GetAllCustomers_CompletesWithinAcceptableTime()
     {
         var stopwatch = Stopwatch.StartNew();
-        var response = await this.client.GetAsync(new Uri("/api/customers"));
+        var response = await this.client.GetAsync(new Uri("/api/customers", UriKind.RelativeOrAbsolute));
         stopwatch.Stop();
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -41,7 +41,7 @@ public class PerformanceTests
     public async Task GetAllProducts_CompletesWithinAcceptableTime()
     {
         var stopwatch = Stopwatch.StartNew();
-        var response = await this.client.GetAsync(new Uri("/api/products"));
+        var response = await this.client.GetAsync(new Uri("/api/products", UriKind.RelativeOrAbsolute));
         stopwatch.Stop();
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -157,7 +157,7 @@ public class PerformanceTests
     public async Task DeleteCustomer_CompletesWithinAcceptableTime()
     {
         var stopwatch = Stopwatch.StartNew();
-        var response = await this.client.DeleteAsync(new Uri("/api/customers/2"));
+        var response = await this.client.DeleteAsync(new Uri("/api/customers/2", UriKind.RelativeOrAbsolute));
         stopwatch.Stop();
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
