@@ -16,7 +16,6 @@ public class AutomapperProfile : Profile
             .ForMember(cm => cm.BirthDate, c => c.MapFrom(x => x.Person != null ? x.Person.BirthDate : default))
             .ForMember(cm => cm.DiscountValue, c => c.MapFrom(x => x.DiscountValue))
             .ForMember(cm => cm.ReceiptsIds, c => c.MapFrom(x => x.Receipts != null ? x.Receipts.Select(r => r.Id) : new List<int>()))
-            //.ForMember(c => c.Id, cm => cm.MapFrom(x => x.PersonId))
             .ReverseMap()
             .ForMember(c => c.Id, opt => opt.MapFrom(cm => cm.Id))
             .ForMember(c => c.PersonId, opt => opt.MapFrom(cm => cm.Id))
@@ -25,7 +24,7 @@ public class AutomapperProfile : Profile
                 Id = cm.Id,
                 Name = cm.Name,
                 Surname = cm.Surname,
-                BirthDate = cm.BirthDate
+                BirthDate = cm.BirthDate,
             }))
             .ForMember(c => c.Receipts, opt => opt.Ignore());
 

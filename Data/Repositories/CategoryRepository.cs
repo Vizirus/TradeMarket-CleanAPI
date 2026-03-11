@@ -13,13 +13,8 @@ public class CategoryRepository : AbstractRepository, ICategoryRepository
 
     public async Task AddAsync(ProductCategory entity)
     {
-        ArgumentNullException.ThrowIfNull(nameof(entity));
-        bool validation = ValidateEntity(entity);
-        if (validation)
-        {
-            _ = await this.Context.ProductCategories.AddAsync(entity);
-            _ = await this.Context.SaveChangesAsync();
-        }
+        _ = await this.Context.ProductCategories.AddAsync(entity);
+        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(ProductCategory entity)

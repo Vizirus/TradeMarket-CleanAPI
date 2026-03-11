@@ -10,6 +10,40 @@ namespace Business.Tests;
 
 public class ProductServiceTests
 {
+    private static readonly int[] CustomerIds123 = new[] { 6, 7 };
+    private static readonly int[] CustomerIds1 = new[] { 10, 11 };
+    private static readonly int[] CustomerIds4 = new[] { 12, 13 };
+
+    private static readonly int[] productService_2 = new[] { 4, 5, 7, 8, 10, 12, 13 };
+    private static readonly int[] productService_2_1 = new[] { 8, 12, 13 };
+
+    private static readonly int[] ComplexFilters_1 = new[] { 7 };
+    private static readonly int[] ComplexFilters_2 = new[] { 4, 9 };
+    private static readonly int[] ComplexFilters_3 = new[] { 12 };
+    private static readonly int[] ComplexFilters_4 = new[] { 10 };
+
+
+    private static readonly object[] GetCustomersByProductIdCases =
+    {
+        new object[] { 4, CustomerIds123 },
+        new object[] { 5, CustomerIds1 },
+        new object[] { 6, CustomerIds4 },
+    };
+
+    private static readonly object[] GetProductTest_2 =
+    {
+        new object[] { 20, productService_2 },
+        new object[] { 37, productService_2_1 },
+    };
+
+    private static readonly object[] GetFilter_Complex =
+    {
+        new object[] { 4, 16, -1, ComplexFilters_1 },
+        new object[] { 2, 15, 25, ComplexFilters_2 },
+        new object[] { 6, 30, 40, ComplexFilters_3 },
+        new object[] { 5, 10, 22, ComplexFilters_4 },
+    };
+
     [Test]
     public async Task GetAllAsync_Always_ReturnsAllProducts()
     {
@@ -268,10 +302,7 @@ public class ProductServiceTests
         _ = await act.Should().ThrowAsync<MarketException>();
     }
 
-
-    [TestCase(4, new[] {6, 7})]
-    [TestCase(5, new[] {10, 11})]
-    [TestCase(6, new[] {12, 13})]
+    [TestCaseSource(nameof(GetCustomersByProductIdCases))]
     public async Task GetByFilterAsync_CategoryId_ReturnsProductsByCategory(int categoryId, IEnumerable<int> expectedProductIds)
     {
         //arrange
@@ -293,8 +324,7 @@ public class ProductServiceTests
         _ = actual.Should().BeEquivalentTo(expected, options => options.Excluding(x => x.ReceiptDetailIds));
     }
 
-    [TestCase(20, new[] { 4, 5, 7, 8, 10, 12, 13 })]
-    [TestCase(37, new[] {8, 12, 13})]
+    [TestCaseSource(nameof(GetProductTest_2))]
     public async Task GetByFilterAsync_MinPrice_ReturnsProductsByMinPrice(int minPrice, IEnumerable<int> expectedProductIds)
     {
         //arrange
@@ -316,10 +346,7 @@ public class ProductServiceTests
         _ = actual.Should().BeEquivalentTo(expected, options => options.Excluding(x => x.ReceiptDetailIds));
     }
 
-    [TestCase(4, 16, -1, new[] { 7 })]
-    [TestCase(2, 15, 25, new[] { 4, 9 })]
-    [TestCase(6, 30, 40, new[] { 12 })]
-    [TestCase(5, 10, 22, new[] { 10 })]
+    [TestCaseSource(nameof(GetFilter_Complex))]
     public async Task GetByFilterAsync_ComplexFilter_ReturnsProductsByFilter(int? categoryId, int? minPrice, int? maxPrice, IEnumerable<int> expectedProductIds)
     {
         //arrange

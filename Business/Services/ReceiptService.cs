@@ -183,21 +183,6 @@ public class ReceiptService : IReceiptService
         return filtered.Select(r => this.mapper.Map<ReceiptModel>(r));
     }
 
-    private static bool ValidateInput(ReceiptModel model)
-    {
-        var properties = model.GetType().GetProperties();
-        foreach (var property in properties)
-        {
-            var propertyValue = property.GetValue(model, null);
-            if (propertyValue == null)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public async Task AddProductAsync(int productId, int receiptId, int quantity)
     {
         if (productId < 0 || receiptId < 0 || quantity <= 0)
@@ -279,5 +264,20 @@ public class ReceiptService : IReceiptService
         }
 
         await this.unitOfWork.SaveAsync();
+    }
+
+    private static bool ValidateInput(ReceiptModel model)
+    {
+        var properties = model.GetType().GetProperties();
+        foreach (var property in properties)
+        {
+            var propertyValue = property.GetValue(model, null);
+            if (propertyValue == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

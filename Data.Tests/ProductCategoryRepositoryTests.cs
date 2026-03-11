@@ -1,4 +1,4 @@
-﻿using Data.Data;
+using Data.Data;
 using Data.Entities;
 using Data.Repositories;
 using Data.Tests.Comparers;
@@ -39,8 +39,8 @@ public class ProductCategoryRepositoryTests
         await using var context = new TradeMarketDbContext(UnitTestDataHelper.GetUnitTestDbOptions());
 
         var productCategoryRepository = new CategoryRepository(context);
-        var productCategory = new ProductCategory 
-        { 
+        var productCategory = new ProductCategory
+        {
             Id = 3,
             CategoryName = "Test Category"
         };

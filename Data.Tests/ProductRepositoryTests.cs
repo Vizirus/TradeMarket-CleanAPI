@@ -108,7 +108,7 @@ public class ProductRepositoryTests
         var expectedReceiptDetailsCount = 2;
 
         Assert.That(product, Is.EqualTo(expected).Using(new ProductEqualityComparer()), message: "GetByIdWithDetailsAsync method works incorrect");
-        Assert.That(product.ReceiptDetails.Count, Is.EqualTo(expectedReceiptDetailsCount), message: "GetByIdWithDetailsAsync method doesnt't return included entities");
+        Assert.That(product.ReceiptDetails!.Count, Is.EqualTo(expectedReceiptDetailsCount), message: "GetByIdWithDetailsAsync method doesnt't return included entities");
         Assert.That(product.Category, Is.Not.Null, message: "GetByIdWithDetailsAsync method doesnt't return included entities");
     }
 
@@ -126,7 +126,7 @@ public class ProductRepositoryTests
 
         Debug.Assert(products != null, nameof(products) + " != null");
         Assert.That(products!, Is.EqualTo(ExpectedProducts).Using(new ProductEqualityComparer()), message: "GetAllWithDetailsAsync method works incorrect");
-        Assert.That(product?.ReceiptDetails.Count, Is.EqualTo(expectedReceiptDetailsCount), message: "GetAllWithDetailsAsync method doesnt't return included entities");
+        Assert.That(product?.ReceiptDetails!.Count, Is.EqualTo(expectedReceiptDetailsCount), message: "GetAllWithDetailsAsync method doesnt't return included entities");
         Assert.That(product?.Category, Is.Not.Null, message: "GetByIdWithDetailsAsync method doesnt't return included entities");
     }
 

@@ -1,4 +1,4 @@
-﻿using Data.Data;
+using Data.Data;
 using Data.Entities;
 using Data.Repositories;
 using Data.Tests.Comparers;
@@ -103,7 +103,7 @@ public class CustomerRepositoryTests
         Assert.That(customer.Receipts,
             Is.EqualTo(ExpectedReceipts.Where(i => i.CustomerId == expected!.Id)).Using(new ReceiptEqualityComparer()), message: "GetByIdWithDetailsAsync method doesnt't return included entities");
 
-        Assert.That(customer.Receipts.SelectMany(i => i.ReceiptDetails).OrderBy(i => i.Id),
+        Assert.That(customer.Receipts.SelectMany(i => i.ReceiptDetails!).OrderBy(i => i.Id),
             Is.EqualTo(ExpectedReceiptsDetails.Where(i => i.ReceiptId == 1 || i.ReceiptId == 2)).Using(new ReceiptDetailEqualityComparer()), message: "GetByIdWithDetailsAsync method doesnt't return included entities");
 
         Assert.That(customer.Person,
@@ -122,13 +122,13 @@ public class CustomerRepositoryTests
         Assert.That(customers,
             Is.EqualTo(ExpectedCustomers).Using(new CustomerEqualityComparer()), message: "GetAllWithDetailsAsync method works incorrect");
 
-        Assert.That(customers.SelectMany(i => i .Receipts).OrderBy(i => i.Id),
+        Assert.That(customers.SelectMany(i => i.Receipts!).OrderBy(i => i.Id),
             Is.EqualTo(ExpectedReceipts).Using(new ReceiptEqualityComparer()), message: "GetAllWithDetailsAsync method doesnt't return included entities");
 
-        Assert.That(customers.SelectMany(i => i.Receipts).SelectMany(i => i.ReceiptDetails).OrderBy(i => i.Id),
+        Assert.That(customers.SelectMany(i => i.Receipts!).SelectMany(i => i.ReceiptDetails!).OrderBy(i => i.Id),
             Is.EqualTo(ExpectedReceiptsDetails).Using(new ReceiptDetailEqualityComparer()), message: "GetByIdWithDetailsAsync method doesnt't return included entities");
 
-        Assert.That(customers.Select(i => i.Person).OrderBy(i => i.Id),
+        Assert.That(customers.Select(i => i.Person).OrderBy(i => i!.Id),
             Is.EqualTo(ExpectedPersons).Using(new PersonEqualityComparer()), message: "GetByIdWithDetailsAsync method doesnt't return included entities");
     }
 

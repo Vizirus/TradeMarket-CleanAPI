@@ -96,7 +96,7 @@ public class ReceiptServiceTests
         //arrange
         var mockUnitOfWork = new Mock<IUnitOfWork>();
         var receipt = GetTestReceiptsEntities.First(x => x.Id == receiptId);
-        var expectedDetailsLength = receipt.ReceiptDetails.Count;
+        var expectedDetailsLength = receipt.ReceiptDetails!.Count;
 
         _ = mockUnitOfWork.Setup(m => m.ReceiptRepository.GetByIdWithDetailsAsync(It.IsAny<int>()))
             .ReturnsAsync(receipt);
@@ -306,7 +306,9 @@ public class ReceiptServiceTests
         var product = ProductEntities.FirstOrDefault(x => x.Id == productId);
         var receipt = new Receipt
         {
-            Id = 1, CustomerId = 1, Customer = new Customer { Id = 1, DiscountValue = discount }
+            Id = 1,
+            CustomerId = 1,
+            Customer = new Customer { Id = 1, DiscountValue = discount }
         };
 
         var mockUnitOfWork = new Mock<IUnitOfWork>();

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using Business.Models;
 using Business.Services;
 using Business.Validation;
@@ -11,6 +11,17 @@ namespace Business.Tests;
 
 public class CustomerServiceTests
 {
+    private static readonly int[] CustomerIds123 = { 1, 2, 3 };
+    private static readonly int[] CustomerIds1 = { 1 };
+    private static readonly int[] CustomerIds4 = { 4 };
+
+    private static readonly object[] GetCustomersByProductIdCases =
+    {
+    new object[] { 7, CustomerIds123 },
+    new object[] { 3, CustomerIds1 },
+    new object[] { 8, CustomerIds123 },
+    new object[] { 5, CustomerIds4 },};
+
     [Test]
     public async Task GetAllAsync_Always_ReturnsAllCustomers()
     {
@@ -99,7 +110,7 @@ public class CustomerServiceTests
         var customerService = new CustomerService(mockUnitOfWork.Object, UnitTestBusinessHelper.CreateMapperProfile());
 
         //act
-        Func<Task> act = async () => await customerService.AddAsync(null);
+        Func<Task> act = async () => await customerService.AddAsync(null!);
 
         //assert
         _ = await act.Should().ThrowAsync<MarketException>();
@@ -199,10 +210,7 @@ public class CustomerServiceTests
         _ = await act.Should().ThrowAsync<MarketException>();
     }
 
-    [TestCase(7, new[] { 1, 2, 3 })]
-    [TestCase(3, new[] { 1 })]
-    [TestCase(8, new[] { 1, 2, 3 })]
-    [TestCase(5, new[] { 4 })]
+    [TestCaseSource(nameof(GetCustomersByProductIdCases))]
     public async Task GetCustomersByProductIdAsync_ValidProductId_ReturnsExpectedCustomers(int productId,
         int[] expectedCustomerIds)
     {

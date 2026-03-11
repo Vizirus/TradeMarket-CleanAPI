@@ -71,7 +71,10 @@ public class ReceiptRepositoryTests
         var receiptRepository = new ReceiptRepository(context);
         var receipt = new Receipt
         {
-            Id = 1, CustomerId = 2, OperationDate = new DateTime(2021, 10, 5), IsCheckedOut = false
+            Id = 1,
+            CustomerId = 2,
+            OperationDate = new DateTime(2021, 10, 5),
+            IsCheckedOut = false
         };
 
         receiptRepository.Update(receipt);
@@ -107,11 +110,11 @@ public class ReceiptRepositoryTests
             }).OrderBy(i => i.Id)).Using(new ReceiptDetailEqualityComparer()),
             message: "GetByIdWithDetailsAsync method doesnt't return included entities");
 
-        Assert.That(receipt.ReceiptDetails.Select(i => i.Product).OrderBy(i => i.Id),
+        Assert.That(receipt.ReceiptDetails.Select(i => i.Product).OrderBy(i => i!.Id),
             Is.EqualTo(ExpectedProducts.Where(i => i.Id == 1 || i.Id == 2)).Using(new ProductEqualityComparer()),
             message: "GetByIdWithDetailsAsync method doesnt't return included entities");
 
-        Assert.That(receipt.ReceiptDetails.Select(i => i.Product.Category).OrderBy(i => i.Id),
+        Assert.That(receipt.ReceiptDetails.Select(i => i.Product!.Category).OrderBy(i => i!.Id),
             Is.EqualTo(ExpectedProductCategories.Where(i => i.Id == 1 || i.Id == 2))
                 .Using(new ProductCategoryEqualityComparer()),
             message: "GetByIdWithDetailsAsync method doesnt't return included entities");
@@ -135,20 +138,20 @@ public class ReceiptRepositoryTests
             Is.EqualTo(ExpectedReceipts).Using(new ReceiptEqualityComparer()),
             message: "GetAllWithDetailsAsync method works incorrect");
 
-        Assert.That(receipts.SelectMany(i => i.ReceiptDetails).OrderBy(i => i.Id),
+        Assert.That(receipts.SelectMany(i => i.ReceiptDetails!).OrderBy(i => i.Id),
             Is.EqualTo(ExpectedReceiptsDetails).Using(new ReceiptDetailEqualityComparer()),
             message: "GetAllWithDetailsAsync method doesnt't return included entities");
 
-        Assert.That(receipts.SelectMany(i => i.ReceiptDetails).Select(i => i.Product).Distinct().OrderBy(i => i.Id),
+        Assert.That(receipts.SelectMany(i => i.ReceiptDetails!).Select(i => i.Product).Distinct().OrderBy(i => i!.Id),
             Is.EqualTo(ExpectedProducts).Using(new ProductEqualityComparer()),
             message: "GetAllWithDetailsAsync method doesnt't return included entities");
 
         Assert.That(
-            receipts.SelectMany(i => i.ReceiptDetails).Select(i => i.Product.Category).Distinct().OrderBy(i => i.Id),
+            receipts.SelectMany(i => i.ReceiptDetails!).Select(i => i.Product!.Category).Distinct().OrderBy(i => i!.Id),
             Is.EqualTo(ExpectedProductCategories).Using(new ProductCategoryEqualityComparer()),
             message: "GetAllWithDetailsAsync method doesnt't return included entities");
 
-        Assert.That(receipts.Select(i => i.Customer).Distinct().OrderBy(i => i.Id),
+        Assert.That(receipts.Select(i => i.Customer).Distinct().OrderBy(i => i!.Id),
             Is.EqualTo(ExpectedCustomers).Using(new CustomerEqualityComparer()),
             message: "GetAllWithDetailsAsync method doesnt't return included entities");
     }
