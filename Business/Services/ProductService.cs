@@ -61,7 +61,7 @@ public class ProductService : IProductService
     public async Task<IEnumerable<ProductModel>> GetAllAsync()
     {
         List<ProductModel> result = new List<ProductModel>();
-        var collection = await this.unitOfWork.ProductRepository.GetAllAsync();
+        var collection = await this.unitOfWork.ProductRepository.GetAllWithDetailsAsync();
         if (collection is null || !collection.Any())
         {
             throw new MarketException("The collection was null or empty");
@@ -82,7 +82,7 @@ public class ProductService : IProductService
             throw new MarketException("The id was negative!");
         }
 
-        var dbObject = await this.unitOfWork.ProductRepository.GetByIdAsync(id);
+        var dbObject = await this.unitOfWork.ProductRepository.GetByIdWithDetailsAsync(id);
         if (dbObject is null)
         {
             return null!;

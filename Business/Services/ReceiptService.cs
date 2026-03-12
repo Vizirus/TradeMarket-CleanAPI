@@ -44,7 +44,15 @@ public class ReceiptService : IReceiptService
             throw new MarketException("The id was negative");
         }
 
-        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdAsync(modelId);
+        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdWithDetailsAsync(modelId);
+        if (dbObject!.ReceiptDetails is not null)
+        {
+            foreach (var details in dbObject.ReceiptDetails)
+            {
+                this.unitOfWork.ReceiptDetailRepository.Delete(details);
+            }
+        }
+
         if (dbObject is null)
         {
             return;
@@ -56,7 +64,7 @@ public class ReceiptService : IReceiptService
 
     public async Task<IEnumerable<ReceiptModel>> GetAllAsync()
     {
-        var collection = await this.unitOfWork.ReceiptRepository.GetAllAsync();
+        var collection = await this.unitOfWork.ReceiptRepository.GetAllWithDetailsAsync();
         if (collection is null || !collection.Any())
         {
             throw new MarketException("The collection was null or empty");
@@ -72,7 +80,7 @@ public class ReceiptService : IReceiptService
             throw new MarketException("The id was negative");
         }
 
-        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdAsync(id);
+        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdWithDetailsAsync(id);
 
         return this.mapper.Map<ReceiptModel>(dbObject);
     }
@@ -125,7 +133,7 @@ public class ReceiptService : IReceiptService
             throw new MarketException("The id was negative!");
         }
 
-        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdAsync(receiptId);
+        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdWithDetailsAsync(receiptId);
         if (dbObject is null)
         {
             throw new MarketException("No such receipt exists with such id");
@@ -141,7 +149,7 @@ public class ReceiptService : IReceiptService
             totalsum += details.UnitPrice * details.Quantity;
         }
 
-        var customer = await this.unitOfWork.CustomerRepository.GetByIdAsync(dbObject.CustomerId);
+        var customer = await this.unitOfWork.CustomerRepository.GetByIdWithDetailsAsync(dbObject.CustomerId);
         if (customer != null && customer.DiscountValue > 0)
         {
             totalsum = totalsum * ((1 - customer.DiscountValue) / 100m);
@@ -157,7 +165,7 @@ public class ReceiptService : IReceiptService
             throw new MarketException("The id was negative!");
         }
 
-        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdAsync(receiptId);
+        var dbObject = await this.unitOfWork.ReceiptRepository.GetByIdWithDetailsAsync(receiptId);
         if (dbObject is null)
         {
             throw new MarketException("No such receipt exists with such id");
@@ -174,7 +182,7 @@ public class ReceiptService : IReceiptService
             throw new MarketException("Start date must be before or equal to end date.");
         }
 
-        var receipts = await this.unitOfWork.ReceiptRepository.GetAllAsync();
+        var receipts = await this.unitOfWork.ReceiptRepository.GetAllWithDetailsAsync();
         var filtered = receipts.Where(r => r.OperationDate >= startDate && r.OperationDate <= endDate).ToList();
 
         return filtered.Select(r => this.mapper.Map<ReceiptModel>(r));
@@ -187,7 +195,7 @@ public class ReceiptService : IReceiptService
             throw new MarketException("Invalid ProductId, ReceiptId, or Quantity.");
         }
 
-        var receipt = await this.unitOfWork.ReceiptRepository.GetByIdAsync(receiptId);
+        var receipt = await this.unitOfWork.ReceiptRepository.GetByIdWithDetailsAsync(receiptId);
         if (receipt is null)
         {
             throw new MarketException("No such receipt exists with such id!");
@@ -237,7 +245,7 @@ public class ReceiptService : IReceiptService
         }
 
         // Get receipt with details
-        var receipt = await this.unitOfWork.ReceiptRepository.GetByIdAsync(receiptId);
+        var receipt = await this.unitOfWork.ReceiptRepository.GetByIdWithDetailsAsync(receiptId);
         if (receipt is null)
         {
             throw new MarketException("No such receipt exists with such id!");

@@ -79,7 +79,7 @@ public class CustomerService : ICustomerService
             throw new MarketException("The id was negative!");
         }
 
-        var dbObject = await this.unitOfWork.CustomerRepository.GetByIdAsync(id);
+        var dbObject = await this.unitOfWork.CustomerRepository.GetByIdWithDetailsAsync(id);
         if (dbObject is null)
         {
             return null!;

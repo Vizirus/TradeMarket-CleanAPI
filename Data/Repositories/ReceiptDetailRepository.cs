@@ -37,18 +37,11 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
 
     public async Task<IEnumerable<ReceiptDetail>> GetAllWithDetailsAsync()
     {
-        var details = await this.Context.ReceiptsDetails.ToListAsync();
-        foreach (var detail in details)
-        {
-            detail.Receipt = await this.Context.Receipts.FirstOrDefaultAsync(x => x.Id == detail.ReceiptId)
-                ?? throw new ArgumentException("No such receipt with this id!");
-            detail.Product = await this.Context.Products.FirstOrDefaultAsync(x => x.Id == detail.ProductId)
-                ?? throw new ArgumentException("No such product with this id!");
-            detail.Product.Category = await this.Context.ProductCategories.FirstOrDefaultAsync(x => x.Id == detail.Product.ProductCategoryId)
-                ?? throw new ArgumentException("No such category!");
-        }
-
-        return details;
+        return await this.Context.ReceiptsDetails
+            .Include(rd => rd.Receipt)
+            .Include(rd => rd.Product)
+                .ThenInclude(p => p.Category)
+            .ToListAsync();
     }
 
     public async Task<ReceiptDetail?> GetByIdAsync(int id)

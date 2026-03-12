@@ -12,11 +12,11 @@ namespace WebApi.Tests;
 /// </summary>
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private static readonly string DatabaseName = $"TestDb_{Guid.NewGuid()}";
+    private readonly string DatabaseName = $"TestDb_{Guid.NewGuid()}";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        _ = builder.ConfigureServices(services =>
         {
             // Remove the existing DbContext registration
             var descriptor = services.SingleOrDefault(
@@ -27,9 +27,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             }
 
             // Register in-memory DbContext with shared database name for the test instance
-            services.AddDbContext<TradeMarketDbContext>(options =>
+            _ = services.AddDbContext<TradeMarketDbContext>(options =>
             {
-                options.UseInMemoryDatabase(DatabaseName);
+                options.UseInMemoryDatabase(this.DatabaseName);
                 options.EnableSensitiveDataLogging();
             });
         });
