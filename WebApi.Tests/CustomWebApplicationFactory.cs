@@ -49,7 +49,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         try
         {
             db.Database.EnsureCreated();
-            //UnitTestDataHelper.SeedData(db);
+            UnitTestDataHelper.SeedData(db);
             logger.LogInformation("Test database initialized successfully");
         }
         catch (Exception ex)

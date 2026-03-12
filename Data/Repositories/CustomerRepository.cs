@@ -37,10 +37,10 @@ public class CustomerRepository : AbstractRepository, ICustomerRepository
 
     public async Task<IEnumerable<Customer>> GetAllWithDetailsAsync()
     {
-        List<Customer> returnList = new();
-        var customers = await this.Context.Customers.ToListAsync(); // ← load into memory first
+        List<Customer> returnList = new ();
+        var customers = await this.Context.Customers.ToListAsync();
 
-        foreach (var i in customers) // ← now iterate in-memory list, not the DbSet directly
+        foreach (var i in customers)
         {
             i.Person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == i.PersonId)
                 ?? throw new ArgumentException("No such customer with this id!");

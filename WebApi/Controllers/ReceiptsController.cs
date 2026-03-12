@@ -107,7 +107,7 @@ public class ReceiptsController : Controller
     [HttpGet("{receiptId:int}/total")]
     public async Task<IActionResult> ToPay(int receiptId)
     {
-        var total = await this.receiptService.ToPayAsync(receiptId); 
+        var total = await this.receiptService.ToPayAsync(receiptId);
         return this.Ok(total);
     }
 
