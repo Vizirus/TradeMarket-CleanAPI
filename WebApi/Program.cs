@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApi.Services;
 namespace WebApi;
 
-public class Program
+    public class Program
 {
     public static async Task Main(string[] args)
     {
