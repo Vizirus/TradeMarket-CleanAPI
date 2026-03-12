@@ -25,6 +25,14 @@ public class TradeMarketDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
+
+        base.OnModelCreating(modelBuilder);
+
+        if (this.Database.IsInMemory())
+        {
+            return;
+        }
+
         _ = modelBuilder.Entity<Customer>().HasData(DataPopulator.PopulateCustomers());
         _ = modelBuilder.Entity<Person>().HasData(DataPopulator.PopulatePersons());
         _ = modelBuilder.Entity<Product>().HasData(DataPopulator.PopulateProducts());
