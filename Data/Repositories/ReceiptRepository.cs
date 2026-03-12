@@ -42,7 +42,7 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
             .Include(r => r.Customer)
             .Include(r => r.ReceiptDetails!)
                 .ThenInclude(rd => rd.Product)
-                    .ThenInclude(p => p.Category)
+                    .ThenInclude(p => p!.Category)
             .ToListAsync();
     }
 
@@ -80,7 +80,7 @@ public class ReceiptRepository : AbstractRepository, IReceiptRepository
             .Include(r => r.Customer)
             .Include(r => r.ReceiptDetails!)
                 .ThenInclude(rd => rd.Product)
-                    .ThenInclude(p => p.Category)
+                    .ThenInclude(p => p!.Category)
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 }

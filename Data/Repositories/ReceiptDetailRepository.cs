@@ -40,7 +40,7 @@ public class ReceiptDetailRepository : AbstractRepository, IReceiptDetailReposit
         return await this.Context.ReceiptsDetails
             .Include(rd => rd.Receipt)
             .Include(rd => rd.Product)
-                .ThenInclude(p => p.Category)
+                .ThenInclude(p => p!.Category)
             .ToListAsync();
     }
 

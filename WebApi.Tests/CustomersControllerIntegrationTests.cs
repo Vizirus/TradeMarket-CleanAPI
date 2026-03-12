@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using Business.Models;
+using Data.Data;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace WebApi.Tests;
@@ -21,6 +23,13 @@ public class CustomersControllerIntegrationTests
     [TearDown]
     public void TearDown()
     {
+        // Ensure the in-memory database is deleted after each test for isolation
+        if (this.factory != null)
+        {
+            using var scope = this.factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetService<TradeMarketDbContext>();
+            db?.Database.EnsureDeleted();
+        }
         this.client?.Dispose();
         this.factory?.Dispose();
     }

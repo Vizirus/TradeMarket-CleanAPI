@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Data.Data;
 using Data.Entities;
 
@@ -8,8 +9,10 @@ internal static class UnitTestDataHelper
     public static void SeedData(TradeMarketDbContext context)
     {
         // Clear existing data first
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
+        if (context.Persons.Any())
+        {
+            return;
+        }
 
         // Add Persons first (base entities)
         var persons = new[]

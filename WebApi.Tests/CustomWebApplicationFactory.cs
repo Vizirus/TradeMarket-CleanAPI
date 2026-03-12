@@ -12,27 +12,34 @@ namespace WebApi.Tests;
 /// </summary>
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly string DatabaseName = $"TestDb_{Guid.NewGuid()}";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        _ = builder.ConfigureServices(services =>
-        {
-            // Remove the existing DbContext registration
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<TradeMarketDbContext>));
-            if (descriptor != null)
-            {
-                services.Remove(descriptor);
-            }
+		builder.ConfigureServices(services =>
+		{
+			// Generate a unique database name for every test run
+			var databaseName = $"TestDb_{Guid.NewGuid()}";
 
-            // Register in-memory DbContext with shared database name for the test instance
-            _ = services.AddDbContext<TradeMarketDbContext>(options =>
-            {
-                options.UseInMemoryDatabase(this.DatabaseName);
-                options.EnableSensitiveDataLogging();
-            });
-        });
+			// Remove the existing DbContext registration
+			var descriptor = services.SingleOrDefault(
+				d => d.ServiceType == typeof(DbContextOptions<TradeMarketDbContext>));
+			if (descriptor != null)
+			{
+				services.Remove(descriptor);
+			}
+
+			// Register in-memory DbContext with unique database name for the test instance
+			_ = services.AddDbContext<TradeMarketDbContext>(options =>
+			{
+				options.UseInMemoryDatabase(databaseName);
+				options.EnableSensitiveDataLogging();
+			});
+
+			// Log the database name for debugging
+			var provider = services.BuildServiceProvider();
+			var logger = provider.GetService<ILogger<CustomWebApplicationFactory>>();
+			logger?.LogInformation($"Using in-memory database: {databaseName}");
+		});
 
         builder.UseEnvironment("Testing");
     }
