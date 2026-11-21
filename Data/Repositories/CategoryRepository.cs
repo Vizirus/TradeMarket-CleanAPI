@@ -14,13 +14,11 @@ public class CategoryRepository : AbstractRepository, ICategoryRepository
     public async Task AddAsync(ProductCategory entity)
     {
         _ = await this.Context.ProductCategories.AddAsync(entity);
-        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(ProductCategory entity)
     {
         _ = this.Context.ProductCategories.Remove(entity);
-        _ = this.Context.SaveChanges();
     }
 
     public async Task DeleteByIdAsync(int id)
@@ -38,7 +36,7 @@ public class CategoryRepository : AbstractRepository, ICategoryRepository
 
     public async Task<IEnumerable<ProductCategory>> GetAllAsync()
     {
-        return await this.Context.ProductCategories.ToListAsync();
+        return await this.Context.ProductCategories.AsNoTracking().ToListAsync();
     }
 
     public async Task<ProductCategory?> GetByIdAsync(int id)
@@ -54,7 +52,11 @@ public class CategoryRepository : AbstractRepository, ICategoryRepository
 
     public void Update(ProductCategory entity)
     {
-        _ = this.Context.ProductCategories.Update(entity);
-        _ = this.Context.SaveChanges();
+        var ent = this.Context.ProductCategories.AsNoTracking().FirstOrDefault(x => x.Id == entity.Id);
+
+        if (ent is not null)
+        {
+            _ = this.Context.ProductCategories.Update(entity);
+        }
     }
 }

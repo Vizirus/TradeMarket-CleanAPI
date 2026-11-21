@@ -14,13 +14,11 @@ public class PersonRepository : AbstractRepository, IPersonRepository
     public async Task AddAsync(Person entity)
     {
         _ = await this.Context.Persons.AddAsync(entity);
-        _ = await this.Context.SaveChangesAsync();
     }
 
     public void Delete(Person entity)
     {
         _ = this.Context.Persons.Remove(entity);
-        _ = this.Context.SaveChanges();
     }
 
     public async Task DeleteByIdAsync(int id)
@@ -30,10 +28,7 @@ public class PersonRepository : AbstractRepository, IPersonRepository
         {
             _ = this.Context.Persons.Remove(person);
             _ = await this.Context.SaveChangesAsync();
-            return;
         }
-
-        throw new ArgumentException("The id of person is incorrect! Could not find any persons!");
     }
 
     public async Task<IEnumerable<Person>> GetAllAsync()
@@ -43,18 +38,18 @@ public class PersonRepository : AbstractRepository, IPersonRepository
 
     public async Task<Person?> GetByIdAsync(int id)
     {
-        var person = await this.Context.Persons.FirstOrDefaultAsync(x => x.Id == id);
-        if (person is null)
-        {
-            throw new ArgumentException("The id of person is incorrect! Could not find any persons!");
-        }
-
+        var person = await this.Context.Persons.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         return person;
     }
 
     public void Update(Person entity)
     {
-        _ = this.Context.Persons.Update(entity);
-        _ = this.Context.SaveChanges();
+        var existing = this.Context.Persons
+          .FirstOrDefault(c => c.Id == entity.Id);
+
+        if (existing != null)
+        {
+            this.Context.Entry(existing).CurrentValues.SetValues(entity);
+        }
     }
 }

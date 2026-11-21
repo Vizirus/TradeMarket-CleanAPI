@@ -85,7 +85,7 @@ public class ProductService : IProductService
         var dbObject = await this.unitOfWork.ProductRepository.GetByIdWithDetailsAsync(id);
         if (dbObject is null)
         {
-            throw new MarketException("No such product exists with such id");
+            return null!;
         }
 
         return this.mapper.Map<ProductModel>(dbObject);
@@ -133,12 +133,6 @@ public class ProductService : IProductService
             (!filterId.HasValue || x.ProductCategoryId == filterId) &&
             (filterSearch.MinPrice == null || x.Price >= filterSearch.MinPrice) &&
             (filterSearch.MaxPrice == null || x.Price <= filterSearch.MaxPrice));
-
-        if (!returnProducts.Any())
-        {
-            throw new MarketException("Couldn`t find any product with this category and price range!");
-        }
-
         return returnProducts.Select(x => this.mapper.Map<ProductModel>(x));
     }
 

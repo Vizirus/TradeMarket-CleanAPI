@@ -1,0 +1,21 @@
+@WebApi_HostAddress = https://localhost:59886
+
+###
+
+GET {{WebApi_HostAddress}}/api/customers
+
+###
+
+POST {{WebApi_HostAddress}}/api/customers
+Content-Type: application/json
+
+{
+  Id = 6,
+  Name = "dasdas", // Invalid: empty name
+  Surname = "adsadsds", // Invalid: empty surname
+  BirthDate = DateTime.Now, // Invalid: future birthdate.
+  DiscountValue = 10, // Invalid: negative discount
+  ReceiptsIds = new List<int>()
+}
+
+###
